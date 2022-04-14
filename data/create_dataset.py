@@ -52,16 +52,16 @@ if __name__ == '__main__':
         'himself' : 'herself',
         'herself' : 'himself'
     }
-    # dataset = load_dataset('wikitext', 'wikitext-103-v1', split = 'train')
-    # dataset_to_swapped_text(dataset, dic_swap= dic_swap, output_filename="swapped_data.txt")
-    example_dataset = {'text': ['she is testing',
-                            'He is eating', 
-                            'she is talking with him', 
-                            'is she, talking to him?', 
-                            'She told her, she should go to tge concert', 
-                            'is she talking to herself',
-                            "she's talking to him"]}
+    dataset = load_dataset('wikitext', 'wikitext-103-v1', split = 'train')
+    dataset_to_swapped_text(dataset, dic_swap= dic_swap, output_filename="swapped_data.txt")
+    # example_dataset = {'text': ['she is testing',
+    #                         'He is eating', 
+    #                         'she is talking with him', 
+    #                         'is she, talking to him?', 
+    #                         'She told her, she should go to tge concert', 
+    #                         'is she talking to herself',
+    #                         "she's talking to him"]}
 
-    dataset_to_swapped_text(example_dataset, dic_swap = dic_swap, output_filename= "train_try.txt")
+    # dataset_to_swapped_text(example_dataset, dic_swap = dic_swap, output_filename= "train_try.txt")
 
     print("Success")
