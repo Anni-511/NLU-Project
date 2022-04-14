@@ -50,14 +50,6 @@ if __name__ == '__main__':
       train_dataset.set_format(columns=["input_ids", "attention_mask", "special_tokens_mask"])
     print(train_dataset)
 
-    # Note that with `batched=True`, this map processes 1,000 texts together, so group_texts throws away a
-    # remainder for each of those groups of 1,000 texts. You can adjust that batch_size here but a higher value
-    # might be slower to preprocess.
-    #
-    # To speed up this part, we use multiprocessing. See the documentation of the map method for more information:
-    # https://huggingface.co/docs/datasets/package_reference/main_classes.html#datasets.Dataset.map
-
-
     if not truncate_longer_samples:
       train_dataset = train_dataset.map(group_texts, batched=True, batch_size=2_000,
                                         desc=f"Grouping texts in chunks of {max_length}")
