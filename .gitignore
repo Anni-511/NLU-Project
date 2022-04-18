@@ -131,3 +131,5 @@ dmypy.json
 # Added by us
 /err
 /out
+bert.vocab
+try_train.txt
