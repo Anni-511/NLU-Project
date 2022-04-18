@@ -5,12 +5,12 @@ import nltk
 from tqdm import tqdm
 
 def dataset_to_text(dataset, output_filename="data.txt"):
-  """Utility function to save dataset text to disk,
-  useful for using the texts to train the tokenizer 
-  (as the tokenizer accepts files)"""
-  with open(output_filename, "w") as f:
-	for t in dataset["text"]:
-	  print(t, file=f)
+	"""Utility function to save dataset text to disk,
+	useful for using the texts to train the tokenizer 
+	(as the tokenizer accepts files)"""
+	with open(output_filename, "w") as f:
+		for t in dataset["text"]:
+			print(t, file=f)
 
 def swap_gender_sentence(sentence, dic_swap= None):
 	nltk.download('punkt')
@@ -26,16 +26,16 @@ def swap_gender_sentence(sentence, dic_swap= None):
 
 
 def dataset_to_swapped_text(dataset, dic_swap= None, output_filename= None):
-  """Utility function to save dataset text to disk,
-  useful for using the texts to train the tokenizer 
-  (as the tokenizer accepts files)"""
-  with open(output_filename, "w") as f:
-	for t in tqdm(dataset["text"]):
-		if dic_swap:
-			swapped_sentence = swap_gender_sentence(t,dic_swap)
-		else:
-			swapped_sentence = t
-		print(swapped_sentence, file=f)
+	"""Utility function to save dataset text to disk,
+	useful for using the texts to train the tokenizer 
+	(as the tokenizer accepts files)"""
+	with open(output_filename, "w") as f:
+		for t in tqdm(dataset["text"]):
+			if dic_swap:
+				swapped_sentence = swap_gender_sentence(t,dic_swap)
+			else:
+				swapped_sentence = t
+			print(swapped_sentence, file=f)
 
 if __name__ == '__main__':
 	"""
@@ -43,20 +43,69 @@ if __name__ == '__main__':
 	"""
 	print("Started")
 	dic_swap = {
-		'him' : 'her',
-		'her' : 'him',
-		'his' : 'hers',
-		'hers' : 'his',
-		'he' : 'she',
-		'she' : 'he',
+		'actor': 'actress',
+		'actress': 'actor',
+		'boy': 'girl',
+		'girl': 'boy',
+		'boyfriend': 'girlfriend',
+		'girlfriend': 'boyfriend',
+		'boys': 'girls',
+		'girls': 'boys',
+		'father': 'mother',
+		'mother': 'father',
+		'fathers': 'mothers',
+		'mothers': 'fathers',
+		'gentleman': 'lady',
+		'lady': 'gentleman',
+		'gentlemen': 'ladies',
+		'ladies': 'gentlemen',
+		'grandson': 'granddaughter',
+		'granddaughter': 'grandson',
+		'he': 'she',
+		'she': 'he',
+		'hero': 'heroine',
+		'heroine': 'hero',
+		'him': 'her',
+		'her': 'his',
+		'his': 'her',
+		'husband': 'wife',
+		'wife': 'husband',
+		'husbands': 'wives',
+		'wives': 'husbands',
+		'king': 'queen',
+		'queen': 'king',
+		'kings': 'queens',
+		'queens': 'kings',
+		'male': 'female',
+		'female': 'male',
+		'males': 'females',
+		'females': 'males',
+		'man': 'woman',
+		'woman': 'man',
+		'men': 'women',
+		'women': 'men',
+		'mr.': 'mrs.',
+		'mrs.': 'mr.',
+		'prince': 'princess',
+		'princess': 'prince',
+		'son': 'daughter',
+		'daughter': 'son',
+		'sons': 'daughters',
+		'daughters': 'sons',
+		'spokesman': 'spokeswoman',
+		'spokeswoman': 'spokesman',
+		'stepfather': 'stepmother',
+		'stepmother': 'stepfather',
+		'uncle': 'aunt',
+		'aunt': 'uncle',
 		'himself' : 'herself',
 		'herself' : 'himself'
 	}
 	dataset = load_dataset('wikitext', 'wikitext-103-v1', split = 'train')
+	train_size = 0.2
+	dataset = dataset.train_test_split(test_size= 1 - train_size, seed = 42)['train']
 	dataset_to_swapped_text(dataset,
 							dic_swap= dic_swap, 
-							train_size= 0.2,
-							seed= 42,
 							output_filename="swapped_wiki_20.txt")
 	# example_dataset = {'text': ['she is testing',
 	#                         'He is eating', 

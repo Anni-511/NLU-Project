@@ -30,9 +30,9 @@ def group_texts(examples, max_length):
 		return result
 
 def prepare_dataset():
-		# files = ["train_try.txt"]
-		# dataset = load_dataset("text", data_files=files, split="train")
-		dataset = load_dataset('wikitext', 'wikitext-103-v1', split = 'train')
+		files = ["original_wiki_20.txt", "swapped_wiki_20.txt"]
+		dataset = load_dataset("text", data_files=files, split="train")
+		# dataset = load_dataset('wikitext', 'wikitext-103-v1', split = 'train')
 		tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
 
 		truncate_longer_samples = True
