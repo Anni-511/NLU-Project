@@ -12,6 +12,7 @@ import pandas as pd
 from transformers import BertTokenizer, BertForMaskedLM
 from transformers import AlbertTokenizer, AlbertForMaskedLM
 from transformers import RobertaTokenizer, RobertaForMaskedLM
+from transformers import DistilBertTokenizerFast, DistilBertForMaskedLM
 from collections import defaultdict
 from tqdm import tqdm
 
@@ -187,6 +188,13 @@ def evaluate(args):
     elif args.lm_model == "albert":
         tokenizer = AlbertTokenizer.from_pretrained('albert-xxlarge-v2')
         model = AlbertForMaskedLM.from_pretrained('albert-xxlarge-v2')
+        uncased = True
+    elif args.lm_model == "distilbert":
+        tokenizer = DistilBertTokenizerFast.from_pretrained('distilbert-base-uncased')
+        if args.checkpoint:
+            model = DistilBertForMaskedLM.from_pretrained(args.checkpoint)
+        else:
+            model = DistilBertForMaskedLM.from_pretrained('distilbert-base-uncased')
         uncased = True
 
     model.eval()
