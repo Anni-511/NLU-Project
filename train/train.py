@@ -1,8 +1,11 @@
 from datasets import *
 from transformers import BertTokenizerFast, BertConfig, BertForMaskedLM, DataCollatorForLanguageModeling, TrainingArguments, Trainer
+from transformers import DistilBertTokenizerFast, DistilBertConfig, DistilBertForMaskedLM
 import os
 import json
 import functools
+import torch
+import argparse
 
 def encode_with_truncation(examples, tokenizer, max_length):
 	"""Mapping function to tokenize the sentences passed with truncation"""
@@ -29,11 +32,11 @@ def group_texts(examples, max_length):
 		}
 		return result
 
-def prepare_dataset():
-		files = ["original_wiki_20.txt", "swapped_wiki_20.txt"]
+def train(args):
+		files = ["/scratch/rv2138/nlu/data/wiki_2_original_wiki_20.txt", "/scratch/rv2138/nlu/data/wiki_2_swapped_wiki_20.txt"]
 		dataset = load_dataset("text", data_files=files, split="train")
 		# dataset = load_dataset('wikitext', 'wikitext-103-v1', split = 'train')
-		tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
+		tokenizer = DistilBertTokenizerFast.from_pretrained('distilbert-base-uncased')
 
 		truncate_longer_samples = True
 		max_length = tokenizer.model_max_length
@@ -56,37 +59,47 @@ def prepare_dataset():
 		
 		print(dataset)
 		# initialize the model with the config
-		model_config = BertConfig(vocab_size=tokenizer.vocab_size, max_position_embeddings=tokenizer.model_max_length)
-		model = BertForMaskedLM(config=model_config)
+		model_config = DistilBertConfig(vocab_size=tokenizer.vocab_size, max_position_embeddings=tokenizer.model_max_length)
+		# model = DistilBertForMaskedLM(config=model_config)
+		model = DistilBertForMaskedLM.from_pretrained('distilbert-base-uncased')
+		device = "cuda:0" if torch.cuda.is_available() else "cpu"
+
+		model = model.to(device)
 
 		data_collator = DataCollatorForLanguageModeling(
-    tokenizer=tokenizer, mlm=True, mlm_probability=0.2
+    		tokenizer=tokenizer, mlm=True, mlm_probability=0.2
 		)
+		out_dir = '/scratch/rv2138/nlu/checkpoints/' + args.slurm
+		os.makedirs(out_dir, exist_ok=True)
 		training_args = TrainingArguments(
-    output_dir='/scratch/rv2138/nlu/checkpoints',          # output directory to where save model checkpoint
-    # evaluation_strategy="steps",    # evaluate each `logging_steps` steps
-    overwrite_output_dir=True,      
-    num_train_epochs=10,            # number of training epochs, feel free to tweak
-    per_device_train_batch_size=10, # the training batch size, put it as high as your GPU memory fits
-    gradient_accumulation_steps=8,  # accumulating the gradients before updating the weights
-    per_device_eval_batch_size=64,  # evaluation batch size
-    logging_steps=10,             # evaluate, log and save model checkpoints every 1000 step
-    save_steps=100,
-    # load_best_model_at_end=True,  # whether to load the best model (in terms of loss) at the end of training
-    save_total_limit=3,           # whether you don't have much space so you let only 3 model weights saved in the disk
+			output_dir=out_dir,          # output directory to where save model checkpoint
+			# evaluation_strategy="steps",    # evaluate each `logging_steps` steps
+			overwrite_output_dir=True,      
+			num_train_epochs=50,            # number of training epochs, feel free to tweak
+			per_device_train_batch_size=32, # the training batch size, put it as high as your GPU memory fits
+			gradient_accumulation_steps=1,  # accumulating the gradients before updating the weights
+			per_device_eval_batch_size=64,  # evaluation batch size
+			logging_steps=50,             # evaluate, log and save model checkpoints every 1000 step
+			save_steps=1000,
+			# load_best_model_at_end=True,  # whether to load the best model (in terms of loss) at the end of training
+			save_total_limit=3,           # whether you don't have much space so you let only 3 model weights saved in the disk
+			fp16= True
 		)	
 		
 		trainer = Trainer(
-    model=model,
-    args=training_args,
-    data_collator=data_collator,
-    train_dataset=train_dataset,
-    # eval_dataset=test_dataset,
+			model=model,
+			args=training_args,
+			data_collator=data_collator,
+			train_dataset=train_dataset,
+			# eval_dataset=test_dataset,
 		)
 
 		trainer.train()
 
 if __name__ == '__main__':
-		train_dataset = prepare_dataset()
-		# print(train_dataset)
-		print("Success")
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--slurm', type=str, default= '000')
+	args = parser.parse_args()
+	train_dataset = train(args)
+	# print(train_dataset)
+	print("Success")
