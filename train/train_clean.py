@@ -108,7 +108,7 @@ def train(args):
 			output_dir=out_dir,          # output directory to where save model checkpoint
 			# evaluation_strategy="steps",    # evaluate each `logging_steps` steps
 			overwrite_output_dir=True,      
-			num_train_epochs=10,            # number of training epochs, feel free to tweak
+			num_train_epochs=50,            # number of training epochs, feel free to tweak
 			per_device_train_batch_size=16, # the training batch size, put it as high as your GPU memory fits
 			gradient_accumulation_steps=1,  # accumulating the gradients before updating the weights
 			per_device_eval_batch_size=64,  # evaluation batch size
