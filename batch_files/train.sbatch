@@ -22,4 +22,4 @@ singularity exec --nv \
 					  python -m train.train_clean \
 					  --slurm ${SLURM_JOB_ID} \
 					  --model roberta \
-					  --trainingdata /scratch/rv2138/nlu/data/wiki_2_original_wiki_100.txt /scratch/rv2138/nlu/data/wiki_2_swapped_wiki_100.txt"
+					  --trainingdata /scratch/rv2138/nlu/data/wiki_2_original_wiki_1.txt /scratch/rv2138/nlu/data/wiki_2_swapped_wiki_1.txt"
