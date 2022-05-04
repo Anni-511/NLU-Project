@@ -23,7 +23,16 @@ def swap_gender_sentence(sentence, dic_swap= None):
 			new_sentence.append(word)
 	return " ".join(new_sentence)
 
-
+def swap_prop_dataset(dataset, proportion=0.1, dic_swap=None, output_filename=None):
+	idx = np.arange(0, len(dataset), 1)
+	swap_idx = set(np.random.choice(idx, p=proportion))
+	with open(output_filename, "w") as f:
+		for i, t in enumerate(tqdm(dataset["text"])):
+			if i in swap_idx:
+				new_sentence = swap_gender_sentence(t, dic_swap)
+			else:
+				new_sentence = t
+			print(new_sentence, file=f)
 
 def dataset_to_swapped_text(dataset, dic_swap= None, output_filename= None):
 	"""Utility function to save dataset text to disk,
