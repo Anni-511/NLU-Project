@@ -110,12 +110,12 @@ if __name__ == '__main__':
 		'himself' : 'herself',
 		'herself' : 'himself'
 	}
-	dataset = load_dataset('wikitext', 'wikitext-103-v1', split = 'train')
-	train_size = 0.2
+	dataset = load_dataset('wikitext', 'wikitext-2-v1', split = 'train')
+	train_size = 0.50
 	dataset = dataset.train_test_split(test_size= 1 - train_size, seed = 42)['train']
 	dataset_to_swapped_text(dataset,
 							dic_swap= dic_swap, 
-							output_filename="swapped_wiki_20.txt")
+							output_filename="wiki_2_swapped_wiki_50.txt")
 	# example_dataset = {'text': ['she is testing',
 	#                         'He is eating', 
 	#                         'she is talking with him', 
