@@ -49,6 +49,23 @@ def train(args):
 			# Check if this is uncased
 			tokenizer = DebertaTokenizerFast.from_pretrained('microsoft/deberta-base')
 
+
+		save_steps_checkpoint = 0
+		file_name_end = args.trainingdata[0].split("_")[-1]
+		train_data_proportion = file_name_end.split(".")[0]
+		if file_name_end == '100':
+			save_steps_checkpoint = 20000
+		elif file_name_end == '1':
+			save_steps_checkpoint = 500
+		elif file_name_end == '10':
+			save_steps_checkpoint = 2000
+		elif file_name_end == '20':
+			save_steps_checkpoint = 4000
+		elif file_name_end == '50':
+			save_steps_checkpoint = 10000
+		else:
+			save_steps_checkpoint = 1000
+
 		truncate_longer_samples = True
 		max_length = tokenizer.model_max_length
 
@@ -113,7 +130,7 @@ def train(args):
 			gradient_accumulation_steps=1,  # accumulating the gradients before updating the weights
 			per_device_eval_batch_size=64,  # evaluation batch size
 			logging_steps=50,             # evaluate, log and save model checkpoints every 1000 step
-			save_steps=100000,
+			save_steps=save_steps_checkpoint,
 			# load_best_model_at_end=True,  # whether to load the best model (in terms of loss) at the end of training
 			save_total_limit=3,           # whether you don't have much space so you let only 3 model weights saved in the disk
 			fp16= True
