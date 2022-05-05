@@ -23,7 +23,16 @@ def swap_gender_sentence(sentence, dic_swap= None):
 			new_sentence.append(word)
 	return " ".join(new_sentence)
 
-
+def swap_prop_dataset(dataset, proportion=0.1, dic_swap=None, output_filename=None):
+	idx = np.arange(0, len(dataset), 1)
+	swap_idx = set(np.random.choice(idx, p=proportion))
+	with open(output_filename, "w") as f:
+		for i, t in enumerate(tqdm(dataset["text"])):
+			if i in swap_idx:
+				new_sentence = swap_gender_sentence(t, dic_swap)
+			else:
+				new_sentence = t
+			print(new_sentence, file=f)
 
 def dataset_to_swapped_text(dataset, dic_swap= None, output_filename= None):
 	"""Utility function to save dataset text to disk,
@@ -101,12 +110,12 @@ if __name__ == '__main__':
 		'himself' : 'herself',
 		'herself' : 'himself'
 	}
-	dataset = load_dataset('wikitext', 'wikitext-103-v1', split = 'train')
-	train_size = 0.2
+	dataset = load_dataset('wikitext', 'wikitext-2-v1', split = 'train')
+	train_size = 0.50
 	dataset = dataset.train_test_split(test_size= 1 - train_size, seed = 42)['train']
 	dataset_to_swapped_text(dataset,
 							dic_swap= dic_swap, 
-							output_filename="swapped_wiki_20.txt")
+							output_filename="wiki_2_swapped_wiki_50.txt")
 	# example_dataset = {'text': ['she is testing',
 	#                         'He is eating', 
 	#                         'she is talking with him', 

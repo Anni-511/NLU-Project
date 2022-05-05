@@ -1,7 +1,7 @@
 {
     "run_name": "simple_mrpc_roberta-base",
-    "exp_dir": "/content/exp",
-    "data_dir": "/content/exp/tasks",
+    "exp_dir": "/scratch/rv2138/nlu/superglue/exp",
+    "data_dir": "/scratch/rv2138/nlu/superglue/data",
     "hf_pretrained_model_name_or_path": "roberta-base",
     "model_weights_path": null,
     "model_cache_path": null,
