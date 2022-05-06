@@ -48,6 +48,8 @@ def train(args):
 		elif args.model == 'deberta':
 			# Check if this is uncased
 			tokenizer = DebertaTokenizerFast.from_pretrained('microsoft/deberta-base')
+		elif args.model == 'deberta-v3':
+			tokenizer = DebertaTokenizerFast.from_pretrained('microsoft/deberta-v3-base')
 
 
 		save_steps_checkpoint = 0
@@ -98,6 +100,8 @@ def train(args):
 		elif args.model == 'deberta':
 			# Check if this is uncased
 			model_config = DebertaConfig(vocab_size=tokenizer.vocab_size, max_position_embeddings=tokenizer.model_max_length)
+		elif args.model == 'deberta-v3':
+			model_config = DebertaConfig(vocab_size=tokenizer.vocab_size, max_position_embeddings=tokenizer.model_max_length)
 
 		# model = DistilBertForMaskedLM(config=model_config)
 		# model = BertForMaskedLM.from_pretrained('bert-base-uncased')
@@ -111,6 +115,8 @@ def train(args):
 		elif args.model == 'deberta':
 			# Check if this is uncased
 			model = DebertaForMaskedLM.from_pretrained('microsoft/deberta-base')
+		elif args.model == 'deberta-v3':
+			model = DebertaForMaskedLM.from_pretrained('microsoft/deberta-v3-base')
 
 		device = "cuda:0" if torch.cuda.is_available() else "cpu"
 
