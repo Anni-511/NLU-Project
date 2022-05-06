@@ -3,6 +3,7 @@ import os
 import json
 import nltk
 from tqdm import tqdm
+import numpy as np
 
 def dataset_to_text(dataset, output_filename="data.txt"):
 	"""Utility function to save dataset text to disk,
@@ -25,7 +26,8 @@ def swap_gender_sentence(sentence, dic_swap= None):
 
 def swap_prop_dataset(dataset, proportion=0.1, dic_swap=None, output_filename=None):
 	idx = np.arange(0, len(dataset), 1)
-	swap_idx = set(np.random.choice(idx, p=proportion))
+	num_points_to_swap = int(proportion * len(dataset))
+	swap_idx = set(np.random.choice(idx, size=num_points_to_swap, replace = False))
 	with open(output_filename, "w") as f:
 		for i, t in enumerate(tqdm(dataset["text"])):
 			if i in swap_idx:
@@ -111,11 +113,13 @@ if __name__ == '__main__':
 		'herself' : 'himself'
 	}
 	dataset = load_dataset('wikitext', 'wikitext-2-v1', split = 'train')
-	train_size = 0.50
+	train_size = 0.99999
 	dataset = dataset.train_test_split(test_size= 1 - train_size, seed = 42)['train']
-	dataset_to_swapped_text(dataset,
-							dic_swap= dic_swap, 
-							output_filename="wiki_2_swapped_wiki_50.txt")
+	# dataset_to_swapped_text(dataset,
+	# 						dic_swap= dic_swap, 
+	# 						output_filename="wiki_2_swapped_wiki_50.txt")
+	prop_swap = 0.95
+	swap_prop_dataset(dataset, proportion=prop_swap, dic_swap=dic_swap, output_filename=f'wiki_2_prop_{int(prop_swap*100)}_{int(100 - prop_swap*100)}.txt')
 	# example_dataset = {'text': ['she is testing',
 	#                         'He is eating', 
 	#                         'she is talking with him', 
