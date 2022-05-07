@@ -70,7 +70,7 @@ def train(args):
 			save_steps_checkpoint = 1000
 
 		truncate_longer_samples = True
-		max_length = tokenizer.model_max_length
+		max_length = 512 if args.model == 'deberta-v3' else tokenizer.model_max_length
 
 		# the encode function will depend on the truncate_longer_samples variable
 		encode = encode_with_truncation if truncate_longer_samples else encode_without_truncation
