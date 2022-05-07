@@ -50,7 +50,7 @@ def train(args):
 			# Check if this is uncased
 			tokenizer = DebertaTokenizerFast.from_pretrained('microsoft/deberta-base')
 		elif args.model == 'deberta-v3':
-			tokenizer = DDebertaV2TokenizerFast.from_pretrained('microsoft/deberta-v3-base')
+			tokenizer = DebertaV2TokenizerFast.from_pretrained('microsoft/deberta-v3-base')
 
 
 		save_steps_checkpoint = 0
