@@ -13,6 +13,8 @@ from transformers import BertTokenizer, BertForMaskedLM
 from transformers import AlbertTokenizer, AlbertForMaskedLM
 from transformers import RobertaTokenizer, RobertaForMaskedLM
 from transformers import DistilBertTokenizerFast, DistilBertForMaskedLM
+from transformers import DebertaTokenizerFast, DebertaForMaskedLM
+from transformers import DebertaV2TokenizerFast, DebertaV2Tokenizer, DebertaV2Config, DebertaV2ForMaskedLM
 from collections import defaultdict
 from tqdm import tqdm
 
@@ -182,8 +184,12 @@ def evaluate(args):
             model = BertForMaskedLM.from_pretrained('bert-base-uncased')
         uncased = True
     elif args.lm_model == "roberta":
-        tokenizer = RobertaTokenizer.from_pretrained('roberta-large')
-        model = RobertaForMaskedLM.from_pretrained('roberta-large')
+        # Changed large to base
+        tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
+        if args.checkpoint:
+            model = RobertaForMaskedLM.from_pretrained(args.checkpoint) 
+        else:
+            model = RobertaForMaskedLM.from_pretrained('roberta-base')
         uncased = False
     elif args.lm_model == "albert":
         tokenizer = AlbertTokenizer.from_pretrained('albert-xxlarge-v2')
@@ -196,6 +202,21 @@ def evaluate(args):
         else:
             model = DistilBertForMaskedLM.from_pretrained('distilbert-base-uncased')
         uncased = True
+    elif args.lm_model == "deberta":
+        tokenizer = DebertaTokenizerFast.from_pretrained('microsoft/deberta-base')
+        if args.checkpoint:
+            model = DebertaForMaskedLM.from_pretrained(args.checkpoint)
+        else:
+            model = DebertaForMaskedLM.from_pretrained('microsoft/deberta-base')
+        uncased = False
+    elif args.lm_model == "deberta-v3":
+        tokenizer = DebertaV2TokenizerFast.from_pretrained('microsoft/deberta-v3-base')
+        if args.checkpoint:
+            model = DebertaV2ForMaskedLM.from_pretrained(args.checkpoint)
+        else:
+            model = DebertaV2ForMaskedLM.from_pretrained('microsoft/deberta-v3-base')
+        uncased = False
+    
 
     model.eval()
     if torch.cuda.is_available():
@@ -295,4 +316,9 @@ parser.add_argument("--output_file", type=str, help="path to output file with se
 parser.add_argument("--checkpoint", type=str, default= None)
 
 args = parser.parse_args()
+
+print(f"LM Used: {args.lm_model}")
+print(f"Output File: {args.output_file}")
+print(f"Checkpoint Used: {args.checkpoint}")
+
 evaluate(args)
